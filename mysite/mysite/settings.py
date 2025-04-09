@@ -150,7 +150,16 @@ CACHES = {
 CORS_ALLOW_HEADERS = ['*']
 CORS_EXPOSE_HEADERS = ['*']
 
-# settings.py
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # 结果存储
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+TENCENT_SMS_APP_ID = 112142311
+TENCENT_SMS_APP_KEY = "8cc5b87123y423423412387930004"
+TENCENT_SMS_SIGN = "Python之路"
+
+# 如果有多个短信模板，可定义字典，例如：
+TENCENT_SMS_TEMPLATE = {
+    'login': 548760,      # 登录验证码模板ID
+    'register': 548761,   # 注册验证码模板ID
+}

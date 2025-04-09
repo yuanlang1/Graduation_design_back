@@ -17,7 +17,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import datetime
 from django.conf import settings
-
+from qcloudsms_py import SmsSingleSender
+from qcloudsms_py.httpclient import HTTPError
 from .models import User
 
 
@@ -142,6 +143,63 @@ def user_updata(request):
     except Exception as e:
         print(e)
         return JsonResponse({'code': 400, 'msg': 'JSON 格式错误'})
+
+#
+# def send_sms_single(phone_num, template_id, template_param_list):
+#     """
+#     发送单条短信验证码
+#     :param phone_num: 手机号（例如 "13800138000"）
+#     :param template_id: 腾讯云短信模板ID（例如 548760）
+#     :param template_param_list: 模板参数列表，如 [验证码]
+#     :return: 返回腾讯云短信接口响应的字典数据
+#     """
+#     appid = settings.TENCENT_SMS_APP_ID
+#     appkey = settings.TENCENT_SMS_APP_KEY
+#     sms_sign = settings.TENCENT_SMS_SIGN
+#
+#     sender = SmsSingleSender(appid, appkey)
+#     try:
+#         # 第二个参数86表示中国大陆的国家码
+#         response = sender.send_with_param(86, phone_num, template_id, template_param_list, sign=sms_sign)
+#     except HTTPError as e:
+#         response = {'result': 1000, 'errmsg': "网络异常发送失败"}
+#     return response
+#
+#
+# def send_code(request):
+#     """
+#     处理验证码发送请求
+#     前端传递：phone（手机号）
+#     """
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#         except json.JSONDecodeError:
+#             return JsonResponse({'code': 400, 'msg': '数据格式错误'})
+#
+#         phone = data.get('phone', '').strip()
+#         if not phone:
+#             return JsonResponse({'code': 400, 'msg': '请输入手机号'})
+#
+#         # 生成6位数字验证码
+#         code = str(random.randint(100000, 999999))
+#
+#         # 从 settings 中获取短信模板ID（此处取默认模板）
+#         template_id = settings.TENCENT_SMS_TEMPLATE.get('default')
+#         if not template_id:
+#             return JsonResponse({'code': 500, 'msg': '短信模板未配置'})
+#
+#         # 调用腾讯云短信接口发送单条短信
+#         sms_response = send_sms_single(phone, template_id, [code])
+#         if sms_response.get('result') == 0:
+#             # 将验证码保存到缓存中，有效期设置为300秒（5分钟）
+#             cache.set(f'verify_code_{phone}', code, 300)
+#             return JsonResponse({'code': 200, 'msg': '验证码已发送'})
+#         else:
+#             errmsg = sms_response.get('errmsg', '短信发送失败')
+#             return JsonResponse({'code': 500, 'msg': errmsg})
+#
+#     return JsonResponse({'code': 405, 'msg': '请求方法不允许'})
 
 
 def send_code(request):
